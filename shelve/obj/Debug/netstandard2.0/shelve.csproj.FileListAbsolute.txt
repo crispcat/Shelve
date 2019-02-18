@@ -1,6 +1,0 @@
-C:\dev\shelve.net\shelve\shelve\bin\Debug\netstandard2.0\shelve.deps.json
-C:\dev\shelve.net\shelve\shelve\bin\Debug\netstandard2.0\shelve.dll
-C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard2.0\shelve.csprojAssemblyReference.cache
-C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard2.0\shelve.csproj.CoreCompileInputs.cache
-C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard2.0\shelve.AssemblyInfoInputs.cache
-C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard2.0\shelve.AssemblyInfo.cs
