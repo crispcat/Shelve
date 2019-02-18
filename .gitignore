@@ -1,2 +1,3 @@
-shelve\bin\
-shelve\obj\
+shelve/bin
+shelve/obj
+.vs
