@@ -1,0 +1,5 @@
+C:\dev\shelve.net\shelve\shelve\bin\Debug\netstandard1.4\shelve.deps.json
+C:\dev\shelve.net\shelve\shelve\bin\Debug\netstandard1.4\shelve.dll
+C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard1.4\shelve.csprojAssemblyReference.cache
+C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard1.4\shelve.csproj.CoreCompileInputs.cache
+C:\dev\shelve.net\shelve\shelve\obj\Debug\netstandard1.4\shelve.AssemblyInfo.cs
