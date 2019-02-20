@@ -3,15 +3,16 @@ using System.Numerics;
 
 namespace Shelve.Core
 {
-    internal sealed class Expression : FastPriorityQueueNode
+    public sealed class Expression : FastPriorityQueueNode
     {
+        private Variable target;
+        private Variable[] depends;
+
         public readonly string Name;
-
-
 
         public BigFloat Calculate()
         {
-
+            throw new System.Exception();
         }
     }
 }

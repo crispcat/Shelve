@@ -1,19 +1,18 @@
 ﻿using System;
-using System.Linq;
 using Priority_Queue;
 using System.Numerics;
 using System.Collections.Generic;
 
 namespace Shelve.Core
 {
-    internal enum VariableType
+    public enum VariableType
     {
         Sequence,
         Value,
     }
 
     [Serializable]
-    internal sealed class Variable
+    public sealed class Variable
     {
         private float priority;
         private BigFloat lastValue;
@@ -36,7 +35,6 @@ namespace Shelve.Core
                 }
 
                 var actions = sequence.Count;
-
                 while (actions --> 0)
                 {
                     lastValue = sequence.Dequeue().Calculate();
