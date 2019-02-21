@@ -10,7 +10,7 @@ namespace Shelve.Core
 
         public readonly string Name;
 
-        public BigFloat Calculate()
+        public Polynumber Calculate()
         {
             throw new System.Exception();
         }

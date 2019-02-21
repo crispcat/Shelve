@@ -14,8 +14,7 @@ namespace Shelve.Core
     [Serializable]
     public sealed class Variable
     {
-        private float priority;
-        private BigFloat lastValue;
+        private Polynumber lastValue;
 
         private Dictionary<string, Expression> expressions;
         private FastPriorityQueue<Expression> sequence;
@@ -23,7 +22,7 @@ namespace Shelve.Core
         public readonly string Name;
         public readonly VariableType Type;
 
-        public BigFloat Value
+        public Polynumber Value
         {
             get
             {
@@ -48,18 +47,18 @@ namespace Shelve.Core
         {
             Name = name;
 
-            lastValue = new BigFloat(0);
+            lastValue = Polynumber.FromInteger(0);
 
             expressions = new Dictionary<string, Expression>();
 
             Type = VariableType.Sequence;
         }
 
-        public Variable(BigFloat value)
+        public Variable(Polynumber value)
         {
             Name = string.Empty;
 
-            lastValue = new BigFloat(value);
+            lastValue = value;
 
             Type = VariableType.Value;
         }
@@ -75,7 +74,7 @@ namespace Shelve.Core
                 throw new Exception(string.Format("type: \"{0}\" is not supported.", value.GetType().ToString()));
             }
 
-            lastValue = new BigFloat((double)value);
+            lastValue = Polynumber.FromFloatingPoint((double)value);
 
             Type = VariableType.Value;
         }
