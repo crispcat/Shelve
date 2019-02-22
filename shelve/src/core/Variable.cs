@@ -1,5 +1,4 @@
 ﻿using System;
-using Priority_Queue;
 using System.Numerics;
 using System.Collections.Generic;
 
@@ -14,32 +13,18 @@ namespace Shelve.Core
     [Serializable]
     public sealed class Variable
     {
-        private Polynumber lastValue;
+        private double lastValue;
 
-        private Dictionary<string, Expression> expressions;
-        private FastPriorityQueue<Expression> sequence;
+        private ExpressionChain sequence;
 
         public readonly string Name;
         public readonly VariableType Type;
 
-        public Polynumber Value
+        public double Value
         {
             get
             {
-                sequence = new FastPriorityQueue<Expression>(expressions.Count);
-
-                foreach (var expression in expressions)
-                {
-                    sequence.Enqueue(expression.Value, expression.Value.Priority);
-                }
-
-                var actions = sequence.Count;
-                while (actions --> 0)
-                {
-                    lastValue = sequence.Dequeue().Calculate();
-                }
-
-                return lastValue;
+                throw new NotImplementedException();
             }
         }
 
@@ -47,14 +32,14 @@ namespace Shelve.Core
         {
             Name = name;
 
-            lastValue = Polynumber.FromInteger(0);
+            lastValue = 0;
 
-            expressions = new Dictionary<string, Expression>();
+            sequence = new ExpressionChain(Config.MAX_EXPRESSION_COUNT);
 
             Type = VariableType.Sequence;
         }
 
-        public Variable(Polynumber value)
+        public Variable(double value)
         {
             Name = string.Empty;
 
@@ -74,34 +59,19 @@ namespace Shelve.Core
                 throw new Exception(string.Format("type: \"{0}\" is not supported.", value.GetType().ToString()));
             }
 
-            lastValue = Polynumber.FromFloatingPoint((double)value);
+            lastValue = (double)value;
 
             Type = VariableType.Value;
         }
 
         public void AddExpression(Expression expression)
         {
-            if (expressions.ContainsKey(expression.Name))
-            {
-                throw new ArgumentException(string.Format("expression named \"{0}\" is already exist.", expression.Name));
-            }
-
-            expressions.Add(expression.Name, expression);
+            sequence.Add(expression);
         }
 
         public void RemoveExpression(Expression expression)
         {
-            RemoveExpression(expression.Name);
-        }
-
-        public void RemoveExpression(string name)
-        {
-            if (!expressions.ContainsKey(name))
-            {
-                throw new ArgumentException(string.Format("expression named \"{0}\" is not exist.", name));
-            }
-
-            expressions.Remove(name);
+            sequence.Add(expression);
         }
     }
 }
