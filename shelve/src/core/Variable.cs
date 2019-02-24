@@ -1,40 +1,76 @@
-﻿using System;
-using System.Numerics;
-using System.Collections.Generic;
-
-namespace Shelve.Core
+﻿namespace Shelve.Core
 {
+    using System;
+
     public enum VariableType
     {
-        Sequence,
         Value,
+        Sequence,
     }
 
     [Serializable]
-    public sealed class Variable
+    public sealed class Variable : IParallelAccess, IAffectable
     {
-        private double lastValue;
-
-        private ExpressionChain sequence;
-
         public readonly string Name;
+
         public readonly VariableType Type;
 
-        public double Value
+        public double Value => Calculate();
+
+        public double InitialValue { get; set; }
+
+        public double LastValue { get; private set; }
+
+        private HashedCircularConcurrentQueue<Expression> hashedSequence;
+
+        private double Calculate()
         {
-            get
+            if (Type == VariableType.Value)
             {
-                throw new NotImplementedException();
+                return LastValue;
             }
+
+            var count = hashedSequence.Count;
+            var previousValue = LastValue;
+
+            double result = LastValue = InitialValue;
+
+            while (count --> 0)
+            {
+                var hashedExpression = hashedSequence.CircularMoveNext();
+
+                result = hashedExpression.Value.Calculate(this);
+
+                LastValue = result;
+            }
+
+            if (result != previousValue)
+            {
+
+            }
+
+            return result;
+        }
+
+        public void AddExpression(Expression expression)
+        {
+            hashedSequence.Add(expression, expression.priority);
+        }
+
+        public void RemoveExpression(Expression expression)
+        {
+            var hashedExpression = new HashedNode<Expression>(expression, expression.priority);
+
+            hashedSequence.Remove(hashedExpression);
         }
 
         public Variable(string name)
         {
             Name = name;
 
-            lastValue = 0;
+            LastValue = InitialValue = 0;
 
-            sequence = new ExpressionChain(Config.MAX_EXPRESSION_COUNT);
+            hashedSequence = new HashedCircularConcurrentQueue<Expression>(Config.MAX_EXPRESSION_COUNT);
 
             Type = VariableType.Sequence;
         }
@@ -43,7 +79,7 @@ namespace Shelve.Core
         {
             Name = string.Empty;
 
-            lastValue = value;
+            LastValue = InitialValue = value;
 
             Type = VariableType.Value;
         }
@@ -52,26 +88,16 @@ namespace Shelve.Core
         {
             Name = string.Empty;
 
-            bool suportedType = value is int || value is float || value is double;
+            bool suportedType = value is int || value is float;
 
             if (!suportedType)
             {
-                throw new Exception(string.Format("type: \"{0}\" is not supported.", value.GetType().ToString()));
+                throw new Exception($"type: \"{value.GetType().ToString()}\" is not supported.");
             }
 
-            lastValue = (double)value;
+            LastValue = (double)value;
 
             Type = VariableType.Value;
-        }
-
-        public void AddExpression(Expression expression)
-        {
-            sequence.Add(expression);
-        }
-
-        public void RemoveExpression(Expression expression)
-        {
-            sequence.Add(expression);
         }
     }
 }

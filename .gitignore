@@ -1,3 +1,5 @@
 .vs
 shelve/bin
 shelve/obj
+shelve-tests/bin
+shelve-tests/obj

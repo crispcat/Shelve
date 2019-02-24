@@ -1,6 +1,6 @@
 ﻿namespace Shelve.Core
 {
-    public class Optimizer
+    internal interface IAffectable
     {
 
     }
