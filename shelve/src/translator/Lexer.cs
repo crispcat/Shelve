@@ -1,8 +1,8 @@
-﻿using System.Numerics;
-using System.Collections.Generic;
-
-namespace Shelve.Core
+﻿namespace Shelve.Core
 {
+    using System;
+    using System.Collections.Generic;
+
     public enum Token
     {
         //binars
@@ -37,11 +37,11 @@ namespace Shelve.Core
             },
             {
                 "%",
-                new Lexema("%", Token.Rdv, (args) => BigFloat.Round(args[0] / args[1]), priority: 2)
+                new Lexema("%", Token.Rdv, (args) => Math.Round(args[0] / args[1]), priority: 2)
             },
             {
                 "^",
-                new Lexema("^", Token.Pow, (args) => BigFloat.Pow(args[0], (int)(float)args[1]), priority: 3)
+                new Lexema("^", Token.Pow, (args) => Math.Pow(args[0], (int)(float)args[1]), priority: 3)
             },
             {
                 "-",
@@ -49,11 +49,11 @@ namespace Shelve.Core
             },
             {
                 "sqrt",
-                new Lexema("sqrt", Token.Sqrt, (args) => BigFloat.Sqrt(args[0]), priority: 5)
+                new Lexema("sqrt", Token.Sqrt, (args) => Math.Sqrt(args[0]), priority: 5)
             },
             {
                 "round",
-                new Lexema("round", Token.Round, (args) => BigFloat.Round(args[0]), priority: 1)
+                new Lexema("round", Token.Round, (args) => Math.Round(args[0]), priority: 1)
             }
         };
 
@@ -64,10 +64,12 @@ namespace Shelve.Core
         {
             var symbolicFlow = new Queue<char>(expression);
 
-            while (symbolicFlow.Count != 0)
-            {
+            throw new NotImplementedException();
 
-            }
+            //while (symbolicFlow.Count != 0)
+            //{
+
+            //}
         }
 
         private static Lexema GetToken(string key)
@@ -78,7 +80,7 @@ namespace Shelve.Core
             {
                 result = funcs[key];
             }
-            else if (BigFloat.TryParse(key, out BigFloat value))
+            else if (double.TryParse(key, out double value))
             {
                 result = new Lexema(value, Token.Value);
             }

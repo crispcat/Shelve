@@ -6,12 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NUnit" Version="3.11.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="src\api\" />
-    <Folder Include="tests\" />
   </ItemGroup>
 
 </Project>

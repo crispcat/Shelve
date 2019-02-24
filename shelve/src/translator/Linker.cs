@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Shelve.Core
+﻿namespace Shelve.Core
 {
-    class Linker
+    public class Linker
     {
+
     }
 }
