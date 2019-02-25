@@ -65,11 +65,11 @@
 
             var firstHashedNode = new HashedNode<int>(1, 0);
 
-            Assert.IsTrue(firstHashedNode.ID == hashedPriorityQueue.CircularMoveNext().ID);
+            Assert.IsTrue(firstHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
 
             var secondHashedNode = new HashedNode<int>(0, 3);
 
-            Assert.IsTrue(secondHashedNode.ID == hashedPriorityQueue.CircularMoveNext().ID);
+            Assert.IsTrue(secondHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
         }
 
         [Test]
@@ -82,7 +82,7 @@
         {
             foreach (var value in values)
             {
-                Assert.IsTrue(hashQueue.CircularMoveNext().Value == value);
+                Assert.IsTrue(hashQueue.CircularInspect().Value == value);
             }
         }
 
@@ -91,12 +91,12 @@
         {
             var hashedPriorityQueue = GetSimpleObject();
 
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 1);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 3);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 1);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 3);
 
             var addedNode1 = hashedPriorityQueue.Add(2, 0);
 
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 2);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 2);
   
             hashedPriorityQueue.Remove(addedNode1);
 
@@ -107,20 +107,20 @@
             hashedPriorityQueue.Remove(new HashedNode<int>(2, 0));
 
             Assert.IsFalse(hashedPriorityQueue.Contains(addedNode2));
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 4);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 4);
 
             Assert.IsTrue(hashedPriorityQueue.Count == 4);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 2);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 1);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 2);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 1);
 
             hashedPriorityQueue.Add(8, 3);
             hashedPriorityQueue.Add(3, 4);
 
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 3);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 4);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 8);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 2);
-            Assert.IsTrue(hashedPriorityQueue.CircularMoveNext().Value == 3);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 3);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 4);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 8);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 2);
+            Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 3);
 
             hashedPriorityQueue.Add(11, 1);
             hashedPriorityQueue.Add(12, 2);

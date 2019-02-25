@@ -34,7 +34,7 @@
         /// </summary>
         public HashedCircularConcurrentQueue(int priorityCount)
         {
-            ThrowIf(priorityCount < 1, new ArgumentException($"Prioriy count must be greater or equal 1."));
+            ThrowIf(priorityCount < 1, new ArgumentException("Prioriy count must be greater or equal 1."));
 
             priorityGroups = new LinkedList<HashedNode<T>>[priorityCount];
 
@@ -137,7 +137,7 @@
         /// <summary>
         /// O(1)
         /// </summary>
-        public HashedNode<T> CircularMoveNext()
+        public HashedNode<T> CircularInspect()
         {
             if (Count == 0)
             {

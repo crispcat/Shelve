@@ -2,30 +2,35 @@
 {
     using System;
 
-    public enum VariableType
-    {
-        Value,
-        Sequence,
-    }
-
     [Serializable]
-    public sealed class Variable : IParallelAccess, IAffectable
+    public sealed class Variable : IParallelAccess, IAffector, IAffectable
     {
+        public enum VariableType
+        {
+            Static,
+            Dynamic,
+        }
+
         public readonly string Name;
 
         public readonly VariableType Type;
 
-        public double Value => Calculate();
-
-        public double InitialValue { get; set; }
+        public double Value
+        {
+            get => Calculate();
+            set
+            {
+                LastValue = value;
+            }
+        }
 
         public double LastValue { get; private set; }
 
         private HashedCircularConcurrentQueue<Expression> hashedSequence;
 
-        private double Calculate()
+        public double Calculate()
         {
-            if (Type == VariableType.Value)
+            if (Type == VariableType.Static)
             {
                 return LastValue;
             }
@@ -33,20 +38,15 @@
             var count = hashedSequence.Count;
             var previousValue = LastValue;
 
-            double result = LastValue = InitialValue;
+            double result = LastValue;
 
             while (count --> 0)
             {
-                var hashedExpression = hashedSequence.CircularMoveNext();
+                var hashedExpression = hashedSequence.CircularInspect();
 
                 result = hashedExpression.Value.Calculate(this);
 
                 LastValue = result;
-            }
-
-            if (result != previousValue)
-            {
-
             }
 
             return result;
@@ -68,20 +68,20 @@
         {
             Name = name;
 
-            LastValue = InitialValue = 0;
+            LastValue = 0;
 
             hashedSequence = new HashedCircularConcurrentQueue<Expression>(Config.MAX_EXPRESSION_COUNT);
 
-            Type = VariableType.Sequence;
+            Type = VariableType.Dynamic;
         }
 
         public Variable(double value)
         {
             Name = string.Empty;
 
-            LastValue = InitialValue = value;
+            LastValue = value;
 
-            Type = VariableType.Value;
+            Type = VariableType.Static;
         }
 
         public Variable(object value)
@@ -97,7 +97,7 @@
 
             LastValue = (double)value;
 
-            Type = VariableType.Value;
+            Type = VariableType.Static;
         }
     }
 }

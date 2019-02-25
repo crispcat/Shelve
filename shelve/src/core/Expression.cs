@@ -1,17 +1,18 @@
 ﻿namespace Shelve.Core
 {
     using System;
+    using System.Collections.Generic;
 
     public sealed class Expression : IEquatable<Expression>
     {
         public readonly short priority;
 
         private Variable target;
-        private Variable[] depends;
+        private HashSet<Variable> depends;
 
         public readonly string Name;
 
-        public double Calculate(IParallelAccess sender)
+        public double Calculate(IParallelAccess target)
         {
             throw new System.NotImplementedException();
         }
