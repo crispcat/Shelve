@@ -1,9 +1,8 @@
 ﻿namespace Shelve.Core
 {
     using System;
-    using System.Linq;
-    using System.Collections.Generic;
     using System.Text;
+    using System.Collections.Generic;
 
     public sealed class HashedCircularConcurrentQueue<T> where T : IEquatable<T>
     {
@@ -11,41 +10,34 @@
         private Dictionary<HashedNode<T>, LinkedListNode<HashedNode<T>>> indexer;
         private LinkedList<HashedNode<T>>[] priorityGroups;
         private LinkedListNode<HashedNode<T>> current;
-        private bool iterationComplete;
         private bool firstElement;
         private int currentLayer;
         #endregion
 
         #region Properties
-        private int ElementsOnCurrentLayer => priorityGroups[currentLayer].Count;
-
-        public int Count { get; private set; }
-
+        public int ElementsOnCurrentLayer => priorityGroups[currentLayer].Count;
         public int Capacity => priorityGroups.Length;
+        public int Count { get; private set; }
         #endregion
 
         #region Lifecycle
-        private static void ThrowIf(bool predicate, Exception exception)
-        {
-            if (predicate) throw exception;
-        }
         /// <summary>
         /// Initialize instance with given count of "valid" priority levels to memory allocate
         /// </summary>
         public HashedCircularConcurrentQueue(int priorityCount)
         {
-            ThrowIf(priorityCount < 1, new ArgumentException("Prioriy count must be greater or equal 1."));
+            if (priorityCount < 1)
+            {
+                throw new ArgumentException("Prioriy count must be greater or equal 1.");
+            }
 
             priorityGroups = new LinkedList<HashedNode<T>>[priorityCount];
-
             indexer = new Dictionary<HashedNode<T>, LinkedListNode<HashedNode<T>>>(priorityCount);
 
             for (var i = 0; i < priorityCount; i++)
             {
                 priorityGroups[i] = new LinkedList<HashedNode<T>>();
             }
-
-            iterationComplete = true;
 
             Count = 0;
         }
@@ -54,14 +46,15 @@
         /// </summary>
         private void ReallocateMemory(int priorityCount)
         {
-            ThrowIf(priorityCount < 0, new ArgumentException("Allocating memory size must be a positive value!"));
+            if (priorityCount < 0)
+            {
+                throw new ArgumentException("Allocating memory size must be a positive value!");
+            }
 
             var memory = priorityGroups;
-
             priorityGroups = new LinkedList<HashedNode<T>>[priorityCount];
 
             bool needAllocateMemory = priorityCount > memory.Length;
-
             var endIndex = needAllocateMemory ? memory.Length : priorityCount;
 
             for (int i = 0; i < endIndex; i++)
@@ -85,7 +78,10 @@
         /// </summary>
         public HashedNode<T> Add(T @object, int priority)
         {
-            ThrowIf(priority < 0, new ArgumentException("Priority must be greater or equal 0."));
+            if (priority < 0)
+            {
+                throw new ArgumentException("Priority must be a positive value!");
+            }
 
             var element = new HashedNode<T>(@object, priority);
 
@@ -100,7 +96,6 @@
             }
 
             indexer.Add(element, priorityGroups[priority].AddLast(element));
-
             Count++;
 
             if (current == null)
@@ -121,10 +116,9 @@
             }
 
             var linkedListNode = indexer[element];
+
             priorityGroups[element.Priority].Remove(linkedListNode);
-
             indexer.Remove(element);
-
             Count--;
         }
         /// <summary>
@@ -141,7 +135,7 @@
         {
             if (Count == 0)
             {
-                throw new InvalidOperationException("Cannot dequeue from empty queue.");
+                throw new InvalidOperationException("Cannot inspect empty queue.");
             }
 
             if (!firstElement && !MoveNext())
@@ -163,7 +157,6 @@
             if (current.Next != null)
             {
                 current = current.Next;
-
                 result = true;
             }
             else
@@ -173,10 +166,8 @@
                 if (currentLayer != -1)
                 {
                     current = priorityGroups[currentLayer].First;
-
                     result = true;
                 }
-
                 else result = false;
             }
 
@@ -187,19 +178,26 @@
         {
             currentLayer = FindFirstNonEmptyGroupIndex(from: 0);
 
-            ThrowIf(currentLayer == -1, new InvalidOperationException("Queue is empty!"));
+            if (currentLayer == -1)
+            {
+                throw new InvalidOperationException("Queue is empty!");
+            }
 
             current = priorityGroups[currentLayer].First;
-
-            iterationComplete = false;
-
             firstElement = true;
         }
 
         private int FindFirstNonEmptyGroupIndex(int from)
         {
-            ThrowIf(from < 0, new ArgumentException("From index must be a positive value."));
-            ThrowIf(Count == 0, new InvalidOperationException("Queue is empty!"));
+            if (from < 0)
+            {
+                throw new ArgumentException("From index must be a positive value.");
+            }
+
+            if (Count == 0)
+            {
+                new InvalidOperationException("Queue is empty!");
+            }
 
             for (int i = from; i < priorityGroups.Length; i++)
             {

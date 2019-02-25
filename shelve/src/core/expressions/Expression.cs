@@ -7,14 +7,14 @@
     {
         public readonly short priority;
 
-        private Variable target;
-        private HashSet<Variable> depends;
+        private IValueHolder target;
+        private HashSet<IValueHolder> depends;
 
         public readonly string Name;
 
-        public double Calculate(IParallelAccess target)
+        public Number Calculate()
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public override int GetHashCode()

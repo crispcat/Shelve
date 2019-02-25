@@ -35,26 +35,6 @@
                 "/",
                 new Lexema("/", Token.Div, (args) => args[0] / args[1], priority: 3)
             },
-            {
-                "%",
-                new Lexema("%", Token.Rdv, (args) => Math.Round(args[0] / args[1]), priority: 2)
-            },
-            {
-                "^",
-                new Lexema("^", Token.Pow, (args) => Math.Pow(args[0], (int)(float)args[1]), priority: 3)
-            },
-            {
-                "-",
-                new Lexema("-", Token.Inv, (args) => -args[0], priority: 5)
-            },
-            {
-                "sqrt",
-                new Lexema("sqrt", Token.Sqrt, (args) => Math.Sqrt(args[0]), priority: 5)
-            },
-            {
-                "round",
-                new Lexema("round", Token.Round, (args) => Math.Round(args[0]), priority: 1)
-            }
         };
 
         /// <summary>

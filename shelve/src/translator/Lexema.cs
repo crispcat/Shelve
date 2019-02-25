@@ -8,9 +8,9 @@
         public object represents;
         public Token token;
 
-        internal Func<double[], double> action;
+        internal Func<Number[], Number> action;
 
-        internal Lexema(object represents, Token token, Func<double[], double> action = null, int priority = 0)
+        internal Lexema(object represents, Token token, Func<Number[], Number> action = null, int priority = 0)
         {
             this.token = token;
             this.represents = represents;
