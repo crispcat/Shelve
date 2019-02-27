@@ -1,6 +1,5 @@
-﻿namespace Shelve.Core
+﻿namespace Shelve.IO
 {
-    using System;
     using System.IO;
     using System.Text;
     using System.Collections.Generic;
@@ -10,8 +9,6 @@
         private string rootPath;
 
         private List<string> filePaths;
-
-        private const int chunkSize = 2 * 1024; //2KB
 
         public Preprocessor(string path)
         {
@@ -27,7 +24,7 @@
 
             if (filePaths.Count == 0)
             {
-                throw new IOException("Passed path root do not contains any .json files (subdirs included).");
+                throw new IOException("Passed path include subdirs do not contains any .json files.");
             }
         }
 
@@ -71,22 +68,25 @@
         public string Combine()
         {
             var sb = new StringBuilder();
-            var buffer = new byte[chunkSize];
+
+            sb.Append("[");
 
             foreach (var filePath in filePaths)
             {
-                using (var file = File.OpenRead(filePath))
+                if (IsValid(filePath))
                 {
-                    int bytesRead;
+                    var fileText = File.ReadAllText(filePath).Trim(new char[] { '[', ']' });
 
-                    while ((bytesRead = file.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        sb.Append(BitConverter.ToString(buffer));
-                    }
+                    sb.Append(fileText).Append(",");
                 }
             }
 
-            return sb.ToString();
+            return sb.Remove(sb.Length - 1, 1).Append("]").ToString();
+        }
+
+        private bool IsValid(string filePath)
+        {
+            
         }
     }
 }

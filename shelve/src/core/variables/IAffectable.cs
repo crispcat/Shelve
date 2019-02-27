@@ -1,7 +1,8 @@
 ﻿namespace Shelve.Core
 {
-    internal interface IAffectable
+    public interface IAffectable
     {
-
+        bool IsAffected { get; }
+        void Affect();
     }
 }

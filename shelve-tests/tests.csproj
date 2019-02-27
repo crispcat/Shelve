@@ -57,6 +57,8 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="core\HashedCircularConcurrentQueueTests.cs" />
+    <Compile Include="core\IOTests.cs" />
+    <Compile Include="core\VariablesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

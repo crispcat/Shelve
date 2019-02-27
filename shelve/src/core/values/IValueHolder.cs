@@ -2,7 +2,6 @@
 {
     public interface IValueHolder
     {
-        Number Value { get; }
-        Number LastValue { get; }
+        Number Value { get; set; }
     }
 }

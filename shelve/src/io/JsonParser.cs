@@ -1,10 +1,10 @@
-﻿namespace Shelve.Core
+﻿namespace Shelve.IO
 {
     using System;
     using Newtonsoft.Json;
 
-    public class JsonParser
+    public static class JsonParser
     {
-
+        private static string schema = @"";
     }
 }

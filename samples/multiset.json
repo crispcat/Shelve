@@ -1,0 +1,28 @@
+[
+    {
+        "Name" : "Fibonacci",
+        "Declares" :
+        {
+            "moveReccurentMembers" :
+            [
+                "f1 = [0, f2]",
+                "f2 = [1, f]"
+            ]
+        },
+        "Expressions" :
+        [
+            "f += f1 + f2"
+        ]
+    },
+    {
+        "Name" : "Set2",
+        "Declares" :
+        {
+            "simpleIterator" : "[1, + 1]"
+        },
+        "Expressions":
+        [
+            "simpleValue += 1 + simpleIterator / 5"
+        ]
+    }
+]

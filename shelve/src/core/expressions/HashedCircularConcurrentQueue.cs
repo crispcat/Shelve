@@ -4,7 +4,7 @@
     using System.Text;
     using System.Collections.Generic;
 
-    public sealed class HashedCircularConcurrentQueue<T> where T : IEquatable<T>
+    public sealed class HashedCircularConcurrentQueue<T>
     {
         #region Data
         private Dictionary<HashedNode<T>, LinkedListNode<HashedNode<T>>> indexer;
@@ -22,7 +22,7 @@
 
         #region Lifecycle
         /// <summary>
-        /// Initialize instance with given count of "valid" priority levels to memory allocate
+        /// Initialize instance with given count of "valid" priority levels to memory allocate.
         /// </summary>
         public HashedCircularConcurrentQueue(int priorityCount)
         {
@@ -74,7 +74,7 @@
 
         #region Interface
         /// <summary>
-        /// O(1) | O(n) if collision or priority greater than initial.
+        /// O(1) | O(n) if collision | O(p) if passed priority greater than initial capacity.
         /// </summary>
         public HashedNode<T> Add(T @object, int priority)
         {
@@ -87,7 +87,7 @@
 
             if (indexer.ContainsKey(element))
             {
-                throw new Exception($"Element: {@object} already exist.");
+                throw new InvalidOperationException($"Element: {@object} already exist.");
             }
 
             if (priority > priorityGroups.Length - 1)
@@ -112,7 +112,7 @@
         {
             if (!indexer.ContainsKey(element))
             {
-                throw new Exception($"Element: {element.Value} does not exist.");
+                throw new InvalidOperationException($"Element: {element.Value} does not exist.");
             }
 
             var linkedListNode = indexer[element];
