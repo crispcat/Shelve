@@ -7,8 +7,7 @@
     [TestFixture]
     public class HashedCircularConcurrentQueueTests
     {
-        [Test]
-        public void Initialization()
+        [Test] public void Initialization()
         {
             var hashedPriorityQueue1 = new HashedCircularConcurrentQueue<int>(4);
 
@@ -58,22 +57,7 @@
             return hashedPriorityQueue;
         }
 
-        [Test]
-        public void Hash()
-        {
-            var hashedPriorityQueue = GetSimpleObject();
-
-            var firstHashedNode = new HashedNode<int>(1, 0);
-
-            Assert.IsTrue(firstHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
-
-            var secondHashedNode = new HashedNode<int>(0, 3);
-
-            Assert.IsTrue(secondHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
-        }
-
-        [Test]
-        public void CircularMove()
+        [Test] public void CircularMove()
         {
             MoveCircleAndAssert(GetSimpleObject(), new int[] { 1, 3, 4, 2 });
         }
@@ -86,10 +70,9 @@
             }
         }
 
-        [Test]
-        public void CircularMoveWithAddRemoveValue()
+        [Test] public void CircularMoveWithAddRemoveValues()
         {
-            var hashedPriorityQueue = GetSimpleObject();
+            var hashedPriorityQueue = GetSimpleObject(); // {1, 3, 4, 2}
 
             Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 1);
             Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 3);
@@ -102,11 +85,6 @@
 
             Assert.IsFalse(hashedPriorityQueue.Contains(addedNode1));
 
-            var addedNode2 = hashedPriorityQueue.Add(2, 0);
-
-            hashedPriorityQueue.Remove(new HashedNode<int>(2, 0));
-
-            Assert.IsFalse(hashedPriorityQueue.Contains(addedNode2));
             Assert.IsTrue(hashedPriorityQueue.CircularInspect().Value == 4);
 
             Assert.IsTrue(hashedPriorityQueue.Count == 4);

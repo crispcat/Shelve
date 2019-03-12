@@ -60,15 +60,15 @@
             },
             {
                 ")",
-                new Lexema("(", Token.BR)
+                new Lexema(")", Token.BR)
             },
             {
                 "[",
-                new Lexema("(", Token.SBL)
+                new Lexema("[", Token.SBL)
             },
             {
                 "]",
-                new Lexema("(", Token.SBR)
+                new Lexema("]", Token.SBR)
             }
         };
 

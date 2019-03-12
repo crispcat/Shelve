@@ -8,8 +8,6 @@
     {
         private string rootPath;
 
-        private List<string> filePaths;
-
         public Preprocessor(string path)
         {
             if (!Directory.Exists(path))
@@ -18,43 +16,44 @@
             }
 
             rootPath = path;
-            filePaths = new List<string>();
-
-            FindFiles();
-
-            if (filePaths.Count == 0)
-            {
-                throw new IOException("Passed path include subdirs do not contains any .json files.");
-            }
         }
 
-        private void FindFiles()
+        public string MergeAllFiles()
         {
-            Stack<string> dirs = new Stack<string>();
-            dirs.Push(rootPath);
+            var paths = FindJsonsPaths();
+
+            if (paths.Count == 0)
+            {
+                throw new IOException("Passed path do not contains any set files (subdirs included).");
+            }
+
+            var sb = new StringBuilder().Append("[");
+
+            foreach (var path in paths)
+            {
+                var fileText = File.ReadAllText(path).Trim(new char[] { '[', ']' });
+                sb.Append(fileText).Append(",");
+            }
+
+            return sb.Remove(sb.Length - 1, 1).Append("]").ToString();
+        }
+
+        private List<string> FindJsonsPaths()
+        {
+            var dirs = new Stack<string>(new string[] { rootPath });
+            var paths = new List<string>();
 
             while (dirs.Count > 0)
             {
-                string curent = dirs.Pop();
-
-                string[] files;
-                string[] subs;
-
-                try
-                {
-                    subs = Directory.GetDirectories(curent);
-                    files = Directory.GetFiles(curent);
-                }
-                catch
-                {
-                    continue;
-                }
+                var curent = dirs.Pop();
+                var subs = Directory.GetDirectories(curent);
+                var files = Directory.GetFiles(curent);
 
                 foreach (string file in files)
                 {
                     if (file.EndsWith(".json"))
                     {
-                        filePaths.Add(file);
+                        paths.Add(file);
                     }
                 }
 
@@ -63,30 +62,8 @@
                     dirs.Push(sub);
                 }
             }
-        }
 
-        public string Combine()
-        {
-            var sb = new StringBuilder();
-
-            sb.Append("[");
-
-            foreach (var filePath in filePaths)
-            {
-                if (IsValid(filePath))
-                {
-                    var fileText = File.ReadAllText(filePath).Trim(new char[] { '[', ']' });
-
-                    sb.Append(fileText).Append(",");
-                }
-            }
-
-            return sb.Remove(sb.Length - 1, 1).Append("]").ToString();
-        }
-
-        private bool IsValid(string filePath)
-        {
-            
+            return paths;
         }
     }
 }

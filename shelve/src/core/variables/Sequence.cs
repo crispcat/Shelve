@@ -1,5 +1,8 @@
 ﻿namespace Shelve.Core
 {
+    using System;
+
+    [Serializable]
     public abstract class Sequence : ValueHolder
     {
         protected HashedCircularConcurrentQueue<Expression> hashedSequence;

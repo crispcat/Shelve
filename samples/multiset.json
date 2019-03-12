@@ -18,11 +18,11 @@
         "Name" : "Set2",
         "Declares" :
         {
-            "simpleIterator" : "[1, + 1]"
+            "simpleIterator" : [ "it = [1, + 1]" ]
         },
         "Expressions":
         [
-            "simpleValue += 1 + simpleIterator / 5"
+            "simpleValue += 1 + it / 5"
         ]
     }
 ]

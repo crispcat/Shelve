@@ -7,8 +7,7 @@
     [TestFixture]
     public class VariablesTests
     {
-        [Test]
-        public void CalculationsOverride()
+        [Test] public void CalculationsOverride()
         {
             var dics = new Dictionary<string, IValueHolder>();
 
@@ -29,8 +28,7 @@
             Assert.IsFalse(ReferenceEquals(var1.GetType().GetMethod("Calculate"), var2.GetType().GetMethod("Calculate")));
         }
 
-        [Test]
-        public void Affection()
+        [Test] public void Affections()
         {
 
         }

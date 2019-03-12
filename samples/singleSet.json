@@ -2,17 +2,21 @@
     "Name" : "Set3",
     "Declares" :
     {
-        "xPosition" : "0",
-
-        "da" : "0",
-        "V"  : "1",
-
-        "T"  : "[1, + 1]"
+        "initial" :
+        [
+            "xPosition = 0",
+            "da = 0",
+            "V = 1"
+        ],
+        "timeStep" : 
+        [
+            "T = [1, + 1]"
+        ]
     },
     "Expressions":
     [
         "a += T * da",
         "V += a",
-        "distance += V * T"
+        "distance += xPosition + V * T"
     ]
 }
