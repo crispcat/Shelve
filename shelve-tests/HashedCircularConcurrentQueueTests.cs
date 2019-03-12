@@ -57,22 +57,6 @@
             return hashedPriorityQueue;
         }
 
-<<<<<<< HEAD:shelve-tests/HashedCircularConcurrentQueueTests.cs
-=======
-        [Test] public void Hash()
-        {
-            var hashedPriorityQueue = GetSimpleObject();
-
-            var firstHashedNode = new HashedNode<int>(1, 0);
-
-            Assert.IsTrue(firstHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
-
-            var secondHashedNode = new HashedNode<int>(0, 3);
-
-            Assert.IsTrue(secondHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
-        }
-
->>>>>>> 772d2cf23b23c93e5253ad203dd16ca10e5a9933:shelve-tests/HashedCircularConcurrentQueueTests.cs
         [Test] public void CircularMove()
         {
             MoveCircleAndAssert(GetSimpleObject(), new int[] { 1, 3, 4, 2 });
