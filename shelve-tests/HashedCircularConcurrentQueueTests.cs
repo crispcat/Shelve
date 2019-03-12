@@ -7,8 +7,7 @@
     [TestFixture]
     public class HashedCircularConcurrentQueueTests
     {
-        [Test]
-        public void Initialization()
+        [Test] public void Initialization()
         {
             var hashedPriorityQueue1 = new HashedCircularConcurrentQueue<int>(4);
 
@@ -58,8 +57,7 @@
             return hashedPriorityQueue;
         }
 
-        [Test]
-        public void Hash()
+        [Test] public void Hash()
         {
             var hashedPriorityQueue = GetSimpleObject();
 
@@ -72,8 +70,7 @@
             Assert.IsTrue(secondHashedNode.ID == hashedPriorityQueue.CircularInspect().ID);
         }
 
-        [Test]
-        public void CircularMove()
+        [Test] public void CircularMove()
         {
             MoveCircleAndAssert(GetSimpleObject(), new int[] { 1, 3, 4, 2 });
         }
@@ -86,8 +83,7 @@
             }
         }
 
-        [Test]
-        public void CircularMoveWithAddRemoveValue()
+        [Test] public void CircularMoveWithAddRemoveValues()
         {
             var hashedPriorityQueue = GetSimpleObject();
 

@@ -2,9 +2,6 @@
 {
     public class App
     {
-        public void Main()
-        {
-
-        }
+        public void Main() { }
     }
 }
