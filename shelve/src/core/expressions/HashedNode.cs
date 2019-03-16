@@ -1,6 +1,6 @@
 ﻿namespace Shelve.Core
 {
-    public class HashedNode<T>
+    internal class HashedNode<T>
     {
         public readonly T Value;
         public readonly int Priority;

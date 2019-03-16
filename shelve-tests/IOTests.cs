@@ -12,7 +12,7 @@
         [Test] public void ParserExtractsPreprocessorMerges()
         {
             var preprocessor = new Preprocessor(path);
-            var parsedData = JsonParser.ExtractData(preprocessor.MergeAllFiles());
+            var parsedData = JsonPacker.ExtractDataAs<ParsedSet[]>(preprocessor.MergeAllFiles());
         }
     }
 }

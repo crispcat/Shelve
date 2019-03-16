@@ -4,7 +4,7 @@
     using System.Text;
     using System.Collections.Generic;
 
-    public class Preprocessor
+    internal class Preprocessor
     {
         private string rootPath;
 

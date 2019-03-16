@@ -1,10 +1,9 @@
 ﻿namespace Shelve.IO
 {
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System.Collections.Generic;
 
-    public class ParsedSet
+    internal class ParsedSet
     {
         [JsonProperty("Name")]
         public string Name { get; set; }

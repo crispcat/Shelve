@@ -4,7 +4,7 @@
     using System.Text;
     using System.Collections.Generic;
 
-    public sealed class HashedCircularConcurrentQueue<T>
+    internal sealed class HashedCircularConcurrentQueue<T>
     {
         #region Data
         private Dictionary<HashedNode<T>, LinkedListNode<HashedNode<T>>> indexer;

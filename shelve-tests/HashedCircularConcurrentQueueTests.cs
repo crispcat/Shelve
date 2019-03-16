@@ -1,7 +1,7 @@
 ﻿namespace Shelve.Core.Tests
 {
     using System;
-    using Shelve.Core;
+    using global::Shelve.Core;
     using NUnit.Framework;
 
     [TestFixture]

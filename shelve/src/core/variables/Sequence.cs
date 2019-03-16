@@ -5,7 +5,7 @@
     [Serializable]
     public abstract class Sequence : ValueHolder
     {
-        protected HashedCircularConcurrentQueue<Expression> hashedSequence;
+        internal HashedCircularConcurrentQueue<Expression> hashedSequence;
 
         public readonly string Name;
 

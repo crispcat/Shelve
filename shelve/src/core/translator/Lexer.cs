@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    public static class Lexer
+    internal static class Lexer
     {
         /// <summary>
         /// Translate infix string expression in postfix lexical stack

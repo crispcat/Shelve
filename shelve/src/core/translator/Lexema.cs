@@ -6,7 +6,7 @@
     /// <summary>
     /// Represents a value, variable name or operator from expression string
     /// </summary>
-    public struct Lexema
+    internal struct Lexema
     {
         public enum Token
         {
