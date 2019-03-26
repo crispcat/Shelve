@@ -9,19 +9,21 @@
     {
         public readonly string Name;
 
-        private Dictionary<string, string[]> declares;
-        private Dictionary<string, Iterator> iterators;
-        private Dictionary<string, Variable> variables;
-        private Dictionary<string, ValueHolder> staticValues;
+        internal Dictionary<string, Iterator> iterators;
+        internal Dictionary<string, Variable> variables;
+        internal Dictionary<string, ValueHolder> staticValues;
+
+        internal Dictionary<string, List<string>> declares;
 
         static public VariableSet Get(string setName) => DataManager.GetDataBySetName(setName);
 
         internal VariableSet()
         {
-            declares = new Dictionary<string, string[]>();
             iterators = new Dictionary<string, Iterator>();
             variables = new Dictionary<string, Variable>();
             staticValues = new Dictionary<string, ValueHolder>();
+
+            declares = new Dictionary<string, List<string>>();
         }
 
         public Variable Variable(string name) =>

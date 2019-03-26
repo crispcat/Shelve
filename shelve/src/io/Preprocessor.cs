@@ -35,7 +35,7 @@
                 sb.Append(fileText).Append(",");
             }
 
-            return sb.Remove(sb.Length - 1, 1).Append("]").ToString();
+            return sb.Remove(sb.Length - 1, 1).Append("]").Replace(" ", string.Empty).ToString();
         }
 
         private List<string> FindJsonsPaths()

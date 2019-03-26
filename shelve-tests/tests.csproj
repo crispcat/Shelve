@@ -39,8 +39,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Resources\multiset.json" />
-    <None Include="Resources\singleSet.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\shelve\shelve.csproj">
@@ -60,6 +58,7 @@
     <Compile Include="App.cs" />
     <Compile Include="HashedCircularConcurrentQueueTests.cs" />
     <Compile Include="IOTests.cs" />
+    <Compile Include="LexerTests.cs" />
     <Compile Include="VariablesTests.cs" />
   </ItemGroup>
   <ItemGroup>

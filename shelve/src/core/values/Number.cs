@@ -56,5 +56,10 @@
         {
             return value.GetHashCode();
         }
+
+        internal static bool TryParse(string key, out Number value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

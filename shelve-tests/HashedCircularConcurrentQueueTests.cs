@@ -1,4 +1,4 @@
-﻿namespace Shelve.Core.Tests
+﻿namespace Shelve.Tests
 {
     using System;
     using global::Shelve.Core;

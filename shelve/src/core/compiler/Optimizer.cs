@@ -1,6 +1,6 @@
 ﻿namespace Shelve.Core
 {
-    internal class Optimizer
+    internal static class Optimizer
     {
 
     }

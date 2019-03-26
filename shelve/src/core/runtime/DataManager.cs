@@ -14,7 +14,6 @@
         static DataManager()
         {
             translatedSets = new Dictionary<string, VariableSet>();
-
             ProcessInput();
         }
 
@@ -26,13 +25,12 @@
 
             foreach (var parsedSet in parsedSets)
             {
-                TranslateToRelatedData(parsedSet);
-            }
-        }
+                var setCompiler = new SetCompiler(parsedSet);
 
-        private static void TranslateToRelatedData(ParsedSet parsedSet)
-        {
-            
+                setCompiler.Compile();
+
+                translatedSets.Add(setCompiler.TranslatedSet.Name, setCompiler.TranslatedSet);
+            }
         }
 
         internal static VariableSet GetDataBySetName(string name)

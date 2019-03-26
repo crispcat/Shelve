@@ -1,4 +1,4 @@
-﻿namespace Shelve.IO.Tests
+﻿namespace Shelve.Tests
 {
     using System;
     using Shelve.IO;
@@ -9,7 +9,7 @@
     {
         private static readonly string path = AppDomain.CurrentDomain.BaseDirectory + "InputSetsForTests";
 
-        [Test] public void ParserExtractsPreprocessorMerges()
+        [Test] public void PackerExtractsPreprocessorMerges()
         {
             var preprocessor = new Preprocessor(path);
             var parsedData = JsonPacker.ExtractDataAs<ParsedSet[]>(preprocessor.MergeAllFiles());
