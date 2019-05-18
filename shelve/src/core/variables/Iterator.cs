@@ -9,10 +9,7 @@
 
         public void MoveNextValue() => mustCalculateNextValue = true;
 
-        public Iterator(string name, Number value) : base(name, value)
-        {
-            mustCalculateNextValue = false;
-        }
+        public Iterator(string name, Number value) : base(name, value) => mustCalculateNextValue = false;
 
         public override Number Calculate()
         {
@@ -30,6 +27,23 @@
         {
             LastValue = InitialValue;
             mustCalculateNextValue = false;
+        }
+
+        public float Delta
+        {
+            get
+            {
+                var mustCalculate = mustCalculateNextValue;
+                var lastValue = LastValue;
+
+                mustCalculateNextValue = true;
+                var newValue = Calculate();
+
+                LastValue = lastValue;
+                mustCalculateNextValue = mustCalculate;
+
+                return (float)Math.Abs(newValue - lastValue);
+            }
         }
     }
 }

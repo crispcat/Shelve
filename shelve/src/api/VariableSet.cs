@@ -8,68 +8,68 @@
     public class VariableSet
     {
         public readonly string Name;
-
-        internal Dictionary<string, Iterator> iterators;
-        internal Dictionary<string, Variable> variables;
-        internal Dictionary<string, ValueHolder> staticValues;
-
+        
+        internal HashedVariables members;
         internal Dictionary<string, List<string>> declares;
+        
+        static public VariableSet GetInstance(string setName) => DataManager.GetDataBySetName(setName);
 
-        static public VariableSet Get(string setName) => DataManager.GetDataBySetName(setName);
-
-        internal VariableSet()
+        internal VariableSet(string name)
         {
-            iterators = new Dictionary<string, Iterator>();
-            variables = new Dictionary<string, Variable>();
-            staticValues = new Dictionary<string, ValueHolder>();
-
-            declares = new Dictionary<string, List<string>>();
-        }
-
-        public Variable Variable(string name) =>
-            GetDeclaredElement(name, variables);
-
-        public Iterator Iterator(string name) =>
-            GetDeclaredElement(name, iterators);
-
-        public ValueHolder StaticValue(string name) => 
-            GetDeclaredElement(name, staticValues);
-
-        public List<Iterator> GetIteratorsInGroup(string declaredGroup) => 
-            GroupByDeclares(declaredGroup, iterators);
-
-        public List<ValueHolder> GetStaticValuesInGroup(string declaredGroup) =>
-            GroupByDeclares(declaredGroup, staticValues);
-
-
-        private T GetDeclaredElement<T>(string name, Dictionary<string, T> targetDictionary)
-        {
-            if (!targetDictionary.ContainsKey(name))
+            if (!Lexica.variableRegex.IsMatch(name))
             {
-                throw new ArgumentException($"Set \"{Name}\" do not contains \"{name}\" {typeof(T).Name}");
+                throw new ArgumentException($"Name format exception for set {name}");
             }
 
-            return targetDictionary[name];
+            Name = name;
+            declares = new Dictionary<string, List<string>>();
+            members = null;
         }
 
-        private List<T> GroupByDeclares<T>(string declaredGroup, Dictionary<string, T> targetDictionary)
+        // For Unity
+        public float this[string key]
+        {
+            get => (float) members[key].Value;
+            set => members[key].Value = value;
+        }
+
+        public T Get<T>(string name) where T : Sequence => members[name] as T;
+
+        public IValueHolder __(string key) => GetDeclaredElement(key);
+
+        public IEnumerable<IValueHolder> _(string declaredGroup) => GroupByDeclares(declaredGroup);
+
+        private IValueHolder GetDeclaredElement(string name)
+        {
+            if (!members.Contains(name))
+            {
+                throw new ArgumentException($"Set \"{Name}\" has no definition for \"{name}\".");
+            }
+
+            return members[name];
+        }
+
+        private IEnumerable<IValueHolder> GroupByDeclares(string declaredGroup)
         {
             if (!declares.ContainsKey(declaredGroup))
             {
-                throw new ArgumentException($"Set \"{Name}\" do not declares \"{declaredGroup}\" group");
+                throw new ArgumentException($"Set \"{Name}\" has no declaration for \"{declaredGroup}\" group.");
             }
 
-            var groupedItems = new List<T>();
+            var elements = new List<IValueHolder>();
 
             foreach (var name in declares[declaredGroup])
             {
-                if (targetDictionary.ContainsKey(name))
-                {
-                    groupedItems.Add(targetDictionary[name]);
-                }
+                elements.Add(members[name]);
             }
 
-            return groupedItems;
+            return elements;
+        }
+
+        public VariableSet Merge(VariableSet another)
+        {
+            members.Merge(another.members);
+            return this;
         }
     }
 }

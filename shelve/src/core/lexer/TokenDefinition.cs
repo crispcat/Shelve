@@ -4,8 +4,8 @@
 
     internal enum Token
     {
-        Variable, Value, Operator, Function,
-        LeftBracket, RightBracket, SqLeftBracket, SqRightBracket
+        Variable, Value, Binar, Unar, Function,
+        LeftBracket, RightBracket, SqLeftBracket, SqRightBracket, Divider
     }
 
     internal sealed class TokenDefinition

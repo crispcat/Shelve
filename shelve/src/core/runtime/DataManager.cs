@@ -1,19 +1,17 @@
 ﻿namespace Shelve.Runtime
 {
     using System;
-    using System.IO;
     using Shelve.IO;
     using Shelve.Core;
-    using System.Reflection;
     using System.Collections.Generic;
 
     internal static class DataManager
     {
-        private static Dictionary<string, VariableSet> translatedSets;
+        private static Dictionary<string, SetTranslator> translators;
 
         static DataManager()
         {
-            translatedSets = new Dictionary<string, VariableSet>();
+            translators = new Dictionary<string, SetTranslator>();
             ProcessInput();
         }
 
@@ -25,24 +23,20 @@
 
             foreach (var parsedSet in parsedSets)
             {
-                var setCompiler = new SetCompiler(parsedSet);
-
-                setCompiler.Compile();
-
-                translatedSets.Add(setCompiler.TranslatedSet.Name, setCompiler.TranslatedSet);
+                translators.Add(parsedSet.Name, new SetTranslator(parsedSet));
             }
         }
 
         internal static VariableSet GetDataBySetName(string name)
         {
-            if (!translatedSets.ContainsKey(name))
+            if (!translators.ContainsKey(name))
             {
                 throw new InvalidOperationException($"Variable set {name} has not processed during " +
                     $"the config translation. Make sure that passed name match set name in config file and " +
                     $"input root path in shelve_config.json is correct");
             }
 
-            return translatedSets[name];
+            return translators[name].Translate();
         }
     }
 }

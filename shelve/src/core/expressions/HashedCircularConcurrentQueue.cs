@@ -105,6 +105,7 @@
 
             return element;
         }
+
         /// <summary>
         /// O(1) | O(n) if collision
         /// </summary>
@@ -121,6 +122,7 @@
             indexer.Remove(element);
             Count--;
         }
+
         /// <summary>
         /// O(1) | O(n) if collision
         /// </summary>
@@ -128,6 +130,7 @@
         {
             return indexer.ContainsKey(hashedNode);
         }
+
         /// <summary>
         /// O(1)
         /// </summary>

@@ -3,11 +3,9 @@
     using System;
 
     [Serializable]
-    public abstract class Sequence : ValueHolder
+    public abstract class Sequence : DynamicValueHolder
     {
         internal HashedCircularConcurrentQueue<Expression> hashedSequence;
-
-        public readonly string Name;
 
         public override Number Value
         {
@@ -27,11 +25,11 @@
 
         public Number InitialValue { get; protected set; }
 
-        public Sequence(string name, Number value) : base(value)
+        protected Sequence(string name, Number value) : base(value)
         {
             Name = name;
             InitialValue = LastValue = value;
-            hashedSequence = new HashedCircularConcurrentQueue<Expression>(2);
+            hashedSequence = new HashedCircularConcurrentQueue<Expression>(6);
         }
 
         public virtual Number Calculate()

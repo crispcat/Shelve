@@ -12,10 +12,22 @@
             this.value = value;
         }
 
+        public Number(int value)
+        {
+            this.value = value;
+        }
+
+        public Number(float value)
+        {
+            this.value = value;
+        }
+
         public Number(Number number)
         {
             value = number.value;
         }
+
+        public static implicit operator double(Number number) => number.value;
 
         public static Number operator + (Number left, Number right)
         {
@@ -27,6 +39,11 @@
             return new Number(left.value - right.value);
         }
 
+        public static Number operator - (Number right)
+        {
+            return new Number(-right.value);
+        }
+
         public static Number operator * (Number left, Number right)
         {
             return new Number(left.value * right.value);
@@ -36,6 +53,17 @@
         {
             return new Number(left.value / right.value);
         }
+
+        public static Number operator % (Number left, Number right)
+        {
+            return new Number((double)(int)(left.value / right.value));
+        }
+
+        public static implicit operator Number(int v) => (double)v;
+
+        public static implicit operator Number(float v) => (double)v;
+
+        public static implicit operator Number(double v) => new Number(v);
 
         public int CompareTo(Number other)
         {
@@ -59,7 +87,18 @@
 
         internal static bool TryParse(string key, out Number value)
         {
-            throw new NotImplementedException();
+            if (double.TryParse(key, out double dValue))
+            {
+                value = new Number(dValue);
+                return true;
+            }
+            else
+            {
+                value = new Number(double.NaN);
+                return false;
+            }
         }
+
+        internal static Number Parse(string key) => double.Parse(key);
     }
 }
