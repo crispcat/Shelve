@@ -1,14 +1,13 @@
 ﻿namespace Shelve.Core
 {
     using System;
-    using System.Linq;
     using System.Collections.Generic;
 
     internal class ExpressionTranslator
     {
         private Type type;
         private Expression result;
-        private Queue<Lexema> inner;
+        private LinkedList<Lexema> inner;
         private HashedVariables variables;
         private LexedExpression lexedExpression;
 
@@ -21,14 +20,14 @@
             this.lexedExpression = lexedExpression;
 
             type = Validator.Elaborate(lexedExpression);
-            inner = new Queue<Lexema>(lexedExpression.LexicalQueue);
-            result = new Expression(inner.Peek().Represents);
+            inner = new LinkedList<Lexema>(lexedExpression.LexicalQueue);
+            result = new Expression(name: inner.First.Value.Represents);
         }
 
         public Expression CreateCalculationStack()
         {
-            variableToken = inner.Dequeue();
-            assignOperatorToken = inner.Dequeue();
+            variableToken = inner.DequeueHead();
+            assignOperatorToken = inner.DequeueHead();
 
             if (type == typeof(Iterator))
             {
@@ -49,7 +48,7 @@
         {
             inner = DisposeIteratorDeclaration(inner);
 
-            var initialValue = inner.Dequeue();
+            var initialValue = inner.DequeueHead();
             IValueHolder iterator;
 
             if (initialValue.Token == Token.Value)
@@ -60,17 +59,16 @@
             {
                 iterator = variables.CreateIterator(variableToken.Represents);
             }
+
+            inner.DequeueHead(); //Drops divider
         }
 
-        private Queue<Lexema> DisposeIteratorDeclaration(Queue<Lexema> lexemas)
+        private LinkedList<Lexema> DisposeIteratorDeclaration(LinkedList<Lexema> lexemas)
         {
-            var tokenArr = lexemas.ToList();
+            lexemas.DequeueHead(); //Drops "["
+            lexemas.DequeueTail(); //Drops "]"
 
-            tokenArr.RemoveAt(0);
-            tokenArr.RemoveAt(1);
-            tokenArr.RemoveAt(tokenArr.Count - 1);
-
-            return new Queue<Lexema>(tokenArr);
+            return lexemas;
         }
 
         private void PresetVariable()
@@ -94,16 +92,8 @@
                         $"Set: \"{lexedExpression.TargetSet}\".\n Reason: {ex.ToString()}");
                 }
 
-                var flow = inner.ToArray();
-
-                inner.Clear();
-                inner.Enqueue(variableToken);
-                inner.Enqueue(assignOperatorToken);
-
-                foreach (var lexema in flow)
-                {
-                    inner.Enqueue(lexema);
-                }
+                inner.EnqueueHead(new Lexema(oprCharArray[0].ToString(), Token.Binar));
+                inner.EnqueueHead(variableToken);
             }
         }
 
@@ -118,5 +108,30 @@
         {
             
         }
+    }
+
+    internal static class ExtendLexemasLinkendListAsQueue
+    {
+        public static Lexema DequeueHead(this LinkedList<Lexema> list)
+        {
+            var first = list.First;
+            list.RemoveFirst();
+
+            return first.Value;
+        }
+
+        public static Lexema DequeueTail(this LinkedList<Lexema> list)
+        {
+            var last = list.Last;
+            list.RemoveLast();
+
+            return last.Value;
+        }
+
+        public static void EnqueueHead(this LinkedList<Lexema> list, Lexema lexema) => 
+            list.AddFirst(lexema);
+
+        public static void EnqueueTail(this LinkedList<Lexema> list, Lexema lexema) => 
+            list.AddLast(lexema);
     }
 }

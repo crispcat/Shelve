@@ -56,9 +56,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="FunctorsTests.cs" />
     <Compile Include="HashedCircularConcurrentQueueTests.cs" />
     <Compile Include="IOTests.cs" />
     <Compile Include="LexerTests.cs" />
+    <Compile Include="ShuntingYardTests.cs" />
     <Compile Include="VariablesTests.cs" />
   </ItemGroup>
   <ItemGroup>

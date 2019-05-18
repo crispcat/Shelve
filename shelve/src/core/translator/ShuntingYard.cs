@@ -9,7 +9,7 @@
         private Queue<Lexema> outSequence;
         private Stack<Lexema> shuntingMachine;
 
-        public ShuntingYard(Queue<Lexema> inSequence)
+        public ShuntingYard(LinkedList<Lexema> inSequence)
         {
             outSequence = new Queue<Lexema>();
             shuntingMachine = new Stack<Lexema>();

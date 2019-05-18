@@ -4,8 +4,8 @@
     {
         "initial" :
         [
-            "xPosition = 0",
-            "da = 0",
+            "position = 0",
+            "A = 0",
             "V = 1"
         ],
         "timeStep" : 
@@ -15,8 +15,7 @@
     },
     "Expressions":
     [
-        "a += T * da",
-        "V += a",
-        "distance += xPosition + V * T"
+        "V += V + A * T",
+        "distance += position + V * T"
     ]
 }

@@ -8,22 +8,36 @@
         public static Type Elaborate(LexedExpression expression)
         {
             var tokens = expression.LexicalQueue.ToArray();
-            var operatorString = tokens.First(t => t.Token == Token.Binar).Represents;
 
-            if (!operatorString.Contains("="))
+            string operatorString;
+
+            try
             {
-                throw new Exception($"Assign operator expected in expression \"{expression.Initial}\"." +
-                    $"VariableSet: \"{expression.TargetSet}\"");
+                operatorString = tokens.First(t => t.Token == Token.Binar).Represents;
+
+                if (!operatorString.Contains("="))
+                {
+                    throw new Exception($"Assign operator expected in expression \"{expression.Initial}\" " +
+                        $"but operator \"{operatorString}\" pass." +
+                        $"VariableSet: \"{expression.TargetSet}\"");
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                throw new Exception($"Operators and assignments expected in expression \"{expression.Initial}\" " +
+                        $"but no one operator pass." +
+                        $"VariableSet: \"{expression.TargetSet}\"");
             }
 
             var sqBrackets = tokens.Where(t => t.Token == Token.SqLeftBracket || t.Token == Token.SqRightBracket);
 
             bool isIterator = sqBrackets.Count() != 0;
 
-            bool isCorrectIterator = sqBrackets.First().Token == Token.SqLeftBracket && sqBrackets.Last().Token == Token.SqRightBracket;
-
             if (isIterator)
             {
+                bool isCorrectIterator = sqBrackets.First().Token == Token.SqLeftBracket && 
+                    sqBrackets.Last().Token == Token.SqRightBracket;
+
                 if (isCorrectIterator)
                 {
                     return typeof(Iterator);

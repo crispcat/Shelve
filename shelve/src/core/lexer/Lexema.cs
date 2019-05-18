@@ -1,7 +1,6 @@
 ﻿namespace Shelve.Core
 {
     using System.Collections.Generic;
-    using static Shelve.Core.Lexica;
 
     /// <summary>
     /// Represents a value, variable name or operator from expression string

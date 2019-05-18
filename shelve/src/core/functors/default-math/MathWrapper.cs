@@ -67,7 +67,7 @@
             }
 
             regularExpression.Remove(regularExpression.Length - 1, 1);
-            regularExpression.Append(@")(\()");
+            regularExpression.Append(@")");
 
             return new Regex(regularExpression.ToString(), options);
         }

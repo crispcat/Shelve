@@ -5,18 +5,24 @@
 
     internal sealed class Lexer
     {
-        private readonly Lexica lexica;
-        private int position;
-
         private enum State
         {
-            WaitForVariable,
             WaitForOperand,
+            WaitForVariable,
+            WaitForOperandExceptFunction,
             WaitForOperator,
-            WaitForOpenBracket,
-            WaitForDivider,
-            WaitForCloseBracket
+            WaitForOpenBracket
         }
+
+        private State state;
+
+        private int position;
+
+        private readonly Lexica lexica;
+
+        private LexedExpression current;
+
+        private readonly Dictionary<State, int[]> inactiveRules;
 
         public Lexer()
         {
@@ -36,60 +42,63 @@
                     new int[] { 4 }
                 },
                 {
+                    State.WaitForOperandExceptFunction,
+                    new int[] { 0, 4 }
+                },
+                {
                     State.WaitForOpenBracket,
-                    new int[] { 0, 1, 2, 3, 4, 6, 7, 8, 9 }
-                },
-                {
-                    State.WaitForCloseBracket,
-                    new int[] { 0, 1, 2, 3, 4, 5, 7, 8, 9 }
-                },
-                {
-                    State.WaitForDivider,
-                    new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }
+                    new int[] { 0, 1, 6, 7, 8, 9 }
                 }
             };
 
-            isProcessFunction = false;
             SetState(State.WaitForVariable);
         }
 
-        private State state;
-
-        private Dictionary<State, int[]> inactiveRules;
-
-        private bool isProcessFunction;
-
         private void SwitchStateForReceived(Token token)
         {
-            bool operandRecieved = token == Token.Variable || token == Token.Value;
-            bool operatorRecieved = token == Token.Binar;
+            switch (state)
+            {
+                case State.WaitForVariable:
 
-            bool dividerRecieved = token == Token.Divider;
-            bool functionRecieved = token == Token.Function;
-            bool openBracketRecieved = token == Token.LeftBracket;
-            bool closeBracketRecieved = token == Token.RightBracket;
+                    if (token == Token.Variable)
+                    {
+                        SetState(State.WaitForOperator);
+                    }
+                    break;
 
-            if (operandRecieved)
-            {
-                SetState(State.WaitForOperator);
-            }
-            else if (operatorRecieved || isProcessFunction && dividerRecieved)
-            {
-                SetState(State.WaitForOperand);
-            }
-            else if (functionRecieved)
-            {
-                isProcessFunction = true;
-                SetState(State.WaitForOpenBracket);
-            }
-            else if (openBracketRecieved)
-            {
-                SetState(State.WaitForOperand);
-            }
-            else if (closeBracketRecieved)
-            {
-                isProcessFunction = isProcessFunction ? false : isProcessFunction;
-                SetState(State.WaitForOperator);
+                case State.WaitForOperator:
+
+                    if (token == Token.Binar || token == Token.Divider)
+                    {
+                        SetState(State.WaitForOperand);
+                    }
+                    break;
+
+                case State.WaitForOperandExceptFunction:
+                case State.WaitForOperand:
+
+                    if (token == Token.Function)
+                    {
+                        SetState(State.WaitForOpenBracket);
+                    }
+                    else if (token == Token.Variable || token == Token.Value)
+                    {
+                        SetState(State.WaitForOperator);
+                    }
+                    break;
+
+                case State.WaitForOpenBracket:
+
+                    if (token == Token.LeftBracket)
+                    {
+                        SetState(State.WaitForOperand);
+                    }
+                    else
+                    {
+                        AbortTokenProcessing(2);
+                        SetState(State.WaitForOperandExceptFunction);
+                    }
+                    break;
             }
         }
 
@@ -105,47 +114,56 @@
 
         public LexedExpression Tokenize(string expression)
         {
-            var processingExpression = new LexedExpression(expression.Replace(" ", string.Empty));
+            current = new LexedExpression(expression.Replace(" ", string.Empty));
 
             position = 0;
 
-            processingExpression = ProcessNextToken(processingExpression);
+            ProcessNextToken();
 
-            if (processingExpression.ExpressionString != string.Empty)
+            if (current.ExpressionString != string.Empty)
             {
-                throw new ArgumentException($"Unable to match against any tokens at " +
-                    $"{processingExpression.Initial}. " +
-                    $"Position: {position}.");
+                throw new ArgumentException($"Unable to match against any tokens in " +
+                    $"\"{current.Initial}\". " +
+                    $"Position: {position}. Lexer state: {state.ToString()}");
             }
             else
             {
-                return processingExpression;
+                return current;
             }
         }
 
-        private LexedExpression ProcessNextToken(LexedExpression expression)
+        private void ProcessNextToken()
         {
             foreach (var rule in lexica.Rules)
             {
-                var matched = rule.Matcher.Match(expression.ExpressionString);
+                var matched = rule.Matcher.Match(current.ExpressionString);
 
                 if (matched > 0)
                 {
                     position += matched;
 
-                    var matchedString = expression.ExpressionString.Substring(0, matched);
+                    var matchedString = current.ExpressionString.Substring(0, matched);
                     var lexema = new Lexema(matchedString, rule.Token);
 
-                    expression.ExpressionString = expression.ExpressionString.Substring(matched);
-                    expression.LexicalQueue.Enqueue(lexema);
+                    current.ExpressionString = current.ExpressionString.Substring(matched);
+                    current.LexicalQueue.AddLast(lexema);
 
                     SwitchStateForReceived(lexema.Token);
 
-                    return ProcessNextToken(expression);
+                    ProcessNextToken();
                 }
             }
+        }
 
-            return expression;
+        private void AbortTokenProcessing(int steps)
+        {
+            while (current.LexicalQueue.Count != 0 && steps --> 0)
+            {
+                var lexema = current.LexicalQueue.Last.Value;
+                current.ExpressionString = lexema.Represents + current.ExpressionString;
+
+                current.LexicalQueue.RemoveLast();
+            }
         }
     }
 }
