@@ -64,5 +64,10 @@
                     $"VariableSet: \"{expression.TargetSet}\"");
             }
         }
+
+        public static void ArgumentCountIsCorrect(LexedExpression lexedExpression)
+        {
+
+        }
     }
 }

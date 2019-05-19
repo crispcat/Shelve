@@ -9,14 +9,27 @@
         private Queue<Lexema> outSequence;
         private Stack<Lexema> shuntingMachine;
 
-        public ShuntingYard(LinkedList<Lexema> inSequence)
+        private Stack<bool> wereArguments;
+        private Stack<int> argumentsCountMachine;
+        private Stack<int> argumentsRecievedMachine;
+
+        private LexedExpression lexedExpression;
+
+        public ShuntingYard(LexedExpression lexedExpression)
         {
+            this.lexedExpression = lexedExpression;
+
             outSequence = new Queue<Lexema>();
             shuntingMachine = new Stack<Lexema>();
-            this.inSequence = new Queue<Lexema>(inSequence);
+
+            wereArguments = new Stack<bool>();
+            argumentsCountMachine = new Stack<int>();
+            argumentsRecievedMachine = new Stack<int>();
+
+            inSequence = new Queue<Lexema>(lexedExpression.LexicalQueue);
         }
 
-        public Queue<Lexema> ProcessInput()
+        public LexedExpression ProcessInput()
         {
             while (inSequence.Count != 0)
             {
@@ -26,11 +39,11 @@
                 {
                     case Token.Value:
                     case Token.Variable:
-                        outSequence.Enqueue(lexema);
+                        PassOperand(lexema);
                         break;
 
                     case Token.Function:
-                        shuntingMachine.Push(lexema);
+                        PassFunction(lexema);
                         break;
 
                     case Token.Divider:
@@ -51,7 +64,9 @@
                         break;
 
                     default:
-                        throw new ArgumentException($"Wrong input token {lexema.Represents}.");
+                        throw new ArgumentException($"Wrong input token {lexema.Represents} has arived " +
+                            $"while shunting \"{lexedExpression.Initial}\" on position {lexema.Position}! " +
+                            $"TargetSet: {lexedExpression.TargetSet}");
                 }
             }
 
@@ -61,13 +76,44 @@
 
                 if (lexema.Token == Token.LeftBracket)
                 {
-                    throw new ArgumentException("Missing bracket!");
+                    throw new ArgumentException($"Missing a bracket pair in expression " +
+                        $"\"{lexedExpression.Initial}\" for bracket on position {lexema.Position}! " +
+                        $"TargetSet: {lexedExpression.TargetSet}");
                 }
 
                 outSequence.Enqueue(lexema);
             }
 
-            return outSequence;
+            lexedExpression.LexicalQueue = new LinkedList<Lexema>(outSequence);
+
+            return lexedExpression;
+        }
+
+        private void PassOperand(Lexema lexema)
+        {
+            outSequence.Enqueue(lexema);
+
+            if (wereArguments.Count != 0 && !wereArguments.Peek())
+            {
+                wereArguments.Pop();
+                wereArguments.Push(true);
+            }
+        }
+
+        private void PassFunction(Lexema lexema)
+        {
+            shuntingMachine.Push(lexema);
+
+            var argsCount = MathWrapper.GetFunctorFor(lexema.Represents).ParamsCount;
+            argumentsCountMachine.Push(argsCount);
+            argumentsRecievedMachine.Push(0);
+
+            if (wereArguments.Count != 0)
+            {
+                wereArguments.Pop();
+                wereArguments.Push(true);
+            }
+            wereArguments.Push(false);
         }
 
         private void PassDivider()
@@ -76,13 +122,26 @@
             {
                 if (shuntingMachine.Peek().Token == Token.LeftBracket)
                 {
+                    UpdateCurrentRecievedArgumentsCount();
                     return;
                 }
 
                 outSequence.Enqueue(shuntingMachine.Pop());
             }
 
-            throw new ArgumentException("Missing a bracket or function divider!");
+            throw new ArgumentException($"Missing a bracket pair or function divider in expression " +
+                $"\"{lexedExpression.Initial}\" on position {ErrorPosition()} !");
+        }
+
+        private void UpdateCurrentRecievedArgumentsCount()
+        {
+            if (argumentsRecievedMachine.Count != 0)
+            {
+                var argsRecieved = argumentsRecievedMachine.Pop();
+
+                argsRecieved++;
+                argumentsRecievedMachine.Push(argsRecieved);
+            }
         }
 
         private void PassOperator(Lexema lexema)
@@ -106,12 +165,10 @@
                 {
                     outSequence.Enqueue(shuntingMachine.Pop());
                 }
+                else break;
             }
 
-            if (shuntingMachine.Peek().Token == Token.LeftBracket || shuntingMachine.Count == 0)
-            {
-                shuntingMachine.Push(lexema);
-            }
+            shuntingMachine.Push(lexema);
         }
 
         private void PassRightBracket()
@@ -119,15 +176,59 @@
             PassDivider();
             shuntingMachine.Pop();
 
-            if (shuntingMachine.Peek().Token == Token.Function)
+            if (PeekIsFunction())
             {
-                outSequence.Enqueue(shuntingMachine.Pop());
+                if (argumentsCountMachine.Peek() == argumentsRecievedMachine.Peek() && wereArguments.Peek() == true)
+                {
+                    outSequence.Enqueue(shuntingMachine.Pop());
+
+                    wereArguments.Pop();
+                    argumentsCountMachine.Pop();
+                    argumentsRecievedMachine.Pop();
+                }
+                else
+                {
+                    var ex = new ArgumentException($"Function {shuntingMachine.Peek().Represents} expect to recieve " +
+                        $"\"{argumentsCountMachine.Peek()}\" arguments. " +
+                        $"You passed {RecievedArguments()} arguments " +
+                        $"on position {shuntingMachine.Peek().Position} !");
+
+                    ex.Data.Add("function", shuntingMachine.Peek().Represents);
+                    ex.Data.Add("argsExpected", argumentsCountMachine.Peek());
+                    ex.Data.Add("argsRecieved", RecievedArguments());
+
+                    throw ex;
+                }
             }
+        }
+
+        private int RecievedArguments() => argumentsRecievedMachine.Peek() - (wereArguments.Peek() == true ? 0 : 1);
+
+        private int ErrorPosition()
+        {
+            if (shuntingMachine.Count != 0)
+            {
+                return shuntingMachine.Peek().Position;
+            }
+            else return 0;
         }
 
         private bool PeekIsOperator()
         {
-            return shuntingMachine.Peek().Token == Token.Unar || shuntingMachine.Peek().Token == Token.Binar;
+            if (shuntingMachine.Count != 0)
+            {
+                return shuntingMachine.Peek().Token == Token.Unar || shuntingMachine.Peek().Token == Token.Binar;
+            }
+            else return false;
+        }
+
+        private bool PeekIsFunction()
+        {
+            if (shuntingMachine.Count != 0)
+            {
+                return shuntingMachine.Peek().Token == Token.Function;
+            }
+            else return false;
         }
     }
 }

@@ -143,7 +143,10 @@
                     position += matched;
 
                     var matchedString = current.ExpressionString.Substring(0, matched);
-                    var lexema = new Lexema(matchedString, rule.Token);
+                    var lexema = new Lexema(matchedString, rule.Token)
+                    {
+                        Position = position
+                    };
 
                     current.ExpressionString = current.ExpressionString.Substring(matched);
                     current.LexicalQueue.AddLast(lexema);
@@ -161,6 +164,7 @@
             {
                 var lexema = current.LexicalQueue.Last.Value;
                 current.ExpressionString = lexema.Represents + current.ExpressionString;
+                position -= lexema.Represents.Length;
 
                 current.LexicalQueue.RemoveLast();
             }

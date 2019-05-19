@@ -5,8 +5,9 @@
 
     internal class ExpressionTranslator
     {
-        private Type type;
-        private Expression result;
+        private readonly Type type;
+        private readonly Expression result;
+
         private LinkedList<Lexema> inner;
         private HashedVariables variables;
         private LexedExpression lexedExpression;
@@ -19,9 +20,9 @@
             this.variables = variables;
             this.lexedExpression = lexedExpression;
 
+            inner = lexedExpression.LexicalQueue;
             type = Validator.Elaborate(lexedExpression);
-            inner = new LinkedList<Lexema>(lexedExpression.LexicalQueue);
-            result = new Expression(name: inner.First.Value.Represents);
+            result = new Expression(targetVariable: inner.First.Value.Represents, lexedExpression.Initial);
         }
 
         public Expression CreateCalculationStack()
@@ -46,7 +47,7 @@
 
         private void PresetIterator()
         {
-            inner = DisposeIteratorDeclaration(inner);
+            inner.DequeueHead(); //Drops "["
 
             var initialValue = inner.DequeueHead();
             IValueHolder iterator;
@@ -61,14 +62,7 @@
             }
 
             inner.DequeueHead(); //Drops divider
-        }
-
-        private LinkedList<Lexema> DisposeIteratorDeclaration(LinkedList<Lexema> lexemas)
-        {
-            lexemas.DequeueHead(); //Drops "["
-            lexemas.DequeueTail(); //Drops "]"
-
-            return lexemas;
+            inner.DequeueTail(); //Drops "]"
         }
 
         private void PresetVariable()
@@ -88,8 +82,8 @@
                 }
                 catch (ArgumentException ex)
                 {
-                    throw new ArgumentException($"Can`t create an assignment in expression: \"{lexedExpression.Initial}\"\n" +
-                        $"Set: \"{lexedExpression.TargetSet}\".\n Reason: {ex.ToString()}");
+                    throw new ArgumentException($"Can`t create an assignment in expression: \"{lexedExpression.Initial}\". " +
+                        $"Set: \"{lexedExpression.TargetSet}\". Reason: {ex.ToString()}");
                 }
 
                 inner.EnqueueHead(new Lexema(oprCharArray[0].ToString(), Token.Binar));
@@ -97,17 +91,19 @@
             }
         }
 
-        private Queue<Lexema> ShuntInnerFlow()
-        {
-            var shuntingYard = new ShuntingYard(inner);
-
-            return shuntingYard.ProcessInput();
-        }
-
         private void BuildExpression()
         {
-            
+            lexedExpression = new ShuntingYard(lexedExpression).ProcessInput();
+
+            while (lexedExpression.LexicalQueue.Count != 0)
+            {
+
+            }
         }
+
+        #region ForShuntingTests
+        internal LinkedList<Lexema> LexicalQueue => new LinkedList<Lexema>(lexedExpression.LexicalQueue);
+        #endregion
     }
 
     internal static class ExtendLexemasLinkendListAsQueue

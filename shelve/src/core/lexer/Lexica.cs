@@ -9,9 +9,9 @@
         private static readonly RegexOptions options = RegexOptions.Compiled;
 
         public static readonly Regex variableRegex = new Regex(@"^[a-zA-Z_]+[a-zA-Z_0-9]*", options);
-        public static readonly Regex valueRegex = new Regex(@"^[+-]?\d+([\.]\d+)?([eE][+-]?\d+)?", options);
+        public static readonly Regex valueRegex = new Regex(@"^\d+([\.]\d+)?([eE][+-]?\d+)?", options);
         public static readonly Regex binarRegex = new Regex(@"^(\+|\-|\*|\/|\%|\^|\=)(\=)?", options);
-        public static readonly Regex unarRegex = new Regex(@"^\-", options);
+        public static readonly Regex unarRegex = new Regex(@"^^[\+\-]", options);
         public static readonly Regex leftBracketRegex = new Regex(@"^\(", options);
         public static readonly Regex rightBracketRegex = new Regex(@"^\)", options);
         public static readonly Regex sqLeftBracketRegex = new Regex(@"^\[", options);

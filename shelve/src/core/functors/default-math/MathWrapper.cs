@@ -17,7 +17,7 @@
             ReflectMethods<double>(typeof(Math));
         }
 
-        public static IFunctor GetFunctorFor(string name) => new LibMethodWrapper(reflectedMethods[name]);
+        public static IFunctor GetFunctorFor(string name) => new LibMethodWrapper(reflectedMethods[name.ToLower()]);
 
         private static void ReflectMethods<T>(Type targetLib)
         {
@@ -46,11 +46,11 @@
                 {
                     try
                     {
-                        reflectedMethods.Add(method.Name, method);
+                        reflectedMethods.Add(method.Name.ToLower(), method);
                     }
                     catch (ArgumentException)
                     {
-                        reflectedMethods[method.Name] = method;
+                        reflectedMethods[method.Name.ToLower()] = method;
                     }
                 }
             }

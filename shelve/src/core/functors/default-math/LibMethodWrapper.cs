@@ -14,7 +14,7 @@
 
         public MemberType Type => MemberType.Operation;
 
-        public int Priority { get; }
+        public int Priority { get; set; }
         public Associativity Order { get; set; }
 
         private MethodInfo method;

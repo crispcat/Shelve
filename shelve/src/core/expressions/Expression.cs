@@ -4,18 +4,23 @@
 
     public sealed class Expression
     {
-        internal readonly short priority;
-
         public readonly string TargetVariable;
 
-        internal Queue<IFunctor> members;
+        public readonly string InitialExpressionString;
+
+        internal readonly short priority;
+
+        internal readonly Queue<IFunctor> members;
 
         private Stack<IValueHolder> machine;
 
-        public Expression(string name)
+        public Expression(string targetVariable, string initiaExpressionString)
         {
-            TargetVariable = name;
+            TargetVariable = targetVariable;
+            InitialExpressionString = initiaExpressionString;
+
             machine = new Stack<IValueHolder>();
+            members = new Queue<IFunctor>();
         }
 
         public Number Calculate()

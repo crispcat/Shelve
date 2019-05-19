@@ -11,7 +11,7 @@
             (args) => new ValueHolder(args[0].Value - args[1].Value), 2, 0, Associativity.Left);
 
         public static IFunctor Neg => new Operator("Neg",
-            (args) => new ValueHolder(-args[0].Value), 1, 2, Associativity.Left);
+            (args) => new ValueHolder(-args[0].Value), 1, 3, Associativity.Left);
 
         public static IFunctor Mul => new Operator("Mul",
             (args) => new ValueHolder(args[0].Value * args[1].Value), 2, 1, Associativity.Left);
@@ -22,7 +22,17 @@
         public static IFunctor Rdiv => new Operator("Rdiv",
             (args) => new ValueHolder(args[0].Value % args[1].Value), 2, 1, Associativity.Left);
 
-        public static IFunctor Pow => MathWrapper.GetFunctorFor("Pow");
+        public static IFunctor Pow
+        {
+            get
+            {
+                var powFunctor = MathWrapper.GetFunctorFor("Pow") as LibMethodWrapper;
+                powFunctor.Order = Associativity.Right;
+                powFunctor.Priority = 2;
+
+                return powFunctor;
+            }
+        }
 
         public static IFunctor Eql => new VoidFunctor();
 
