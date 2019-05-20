@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    internal sealed class ValueGetter : IFunctor
+    internal class ValueGetter : IFunctor
     {
         public string Name { get; }
 
@@ -20,17 +20,18 @@
 
         public ValueGetter(string valueName, HashedVariables targetSource)
         {
+            Name = valueName;
             TargetSource = targetSource;
             ParamsCount = 0;
             Inner = null;
         }
 
-        public IValueHolder Calculate()
+        public virtual IValueHolder Calculate()
         {
             if (!TargetSource.Contains(Name))
             {
                 throw new Exception($"Variable {Name} does not exist in current context. " +
-                    $"If the set is dependent merge it with main set or declare variable {Name}.");
+                    $"If the set is dependent, merge it with another set or declare a variable {Name}.");
             }
 
             return TargetSource[Name];

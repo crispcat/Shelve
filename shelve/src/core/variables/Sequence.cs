@@ -38,7 +38,21 @@
 
             while (count --> 0)
             {
-                LastValue = hashedSequence.CircularInspect().Value.Calculate();
+                var expression = hashedSequence.CircularInspect().Value;
+
+                if (expression.members.Count != 0)
+                {
+                    try /* hotfix */
+                    {
+                        LastValue = expression.Calculate();
+                    }
+                    catch
+                    {
+                        Reset();
+
+                        throw new Exception();
+                    }
+                }
             }
 
             return LastValue;

@@ -5,12 +5,12 @@
 
     internal class HashedVariables
     {
-        private List<ValueGetter> getters;
+        internal Dictionary<string, ValueGetter> getters;
         private Dictionary<string, IValueHolder> holders;
 
         public HashedVariables()
         {
-            getters = new List<ValueGetter>();
+            getters = new Dictionary<string, ValueGetter>();
             holders = new Dictionary<string, IValueHolder>();
         }
 
@@ -18,22 +18,21 @@
 
         public IValueHolder CreateIterator(string name, double value = 0)
         {
-            if (!holders.ContainsKey(name))
-            {
-                holders.Add(name, new Iterator(name, value));
-                getters.Add(new ValueGetter(name, this));
-            }
+            HashMember(name, new Iterator(name, value));
 
             return holders[name];
         }
 
         public IValueHolder CreateVariable(string name, double value = 0)
         {
-            if (!holders.ContainsKey(name))
-            {
-                holders.Add(name, new Variable(name, value));
-                getters.Add(new ValueGetter(name, this));
-            }
+            HashMember(name, new Variable(name, value));
+
+            return holders[name];
+        }
+
+        public IValueHolder CreateDynamicValue(string name, double value = 0)
+        {
+            HashMember(name, new DynamicValueHolder(name, value));
 
             return holders[name];
         }
@@ -64,12 +63,27 @@
                 }
             }
 
-            foreach (var getter in another.getters)
+            foreach (var getter in another.getters.Values)
             {
                 getter.TargetSource = this;
             }
 
+            holders = merged;
+
             return this;
+        }
+
+        private void HashMember(string name, IValueHolder member)
+        {
+            if (!holders.ContainsKey(name))
+            {
+                holders.Add(name, member);
+            }
+
+            if (!getters.ContainsKey(name))
+            {
+                getters.Add(name, new ValueGetter(name, this));
+            }
         }
     }
 }

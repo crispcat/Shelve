@@ -1,5 +1,6 @@
 ﻿namespace Shelve.Core
 {
+    using System;
     using System.Collections.Generic;
 
     public sealed class Expression
@@ -8,13 +9,15 @@
 
         public readonly string InitialExpressionString;
 
-        internal readonly short priority;
+        public readonly string VariableSet;
+
+        internal short priority;
 
         internal readonly Queue<IFunctor> members;
 
         private Stack<IValueHolder> machine;
 
-        public Expression(string targetVariable, string initiaExpressionString)
+        public Expression(string targetVariable, string initiaExpressionString, string variableSet)
         {
             TargetVariable = targetVariable;
             InitialExpressionString = initiaExpressionString;
@@ -26,10 +29,11 @@
         public Number Calculate()
         {
             int steps = members.Count;
+            var expr = new Queue<IFunctor>(members);
 
             while (steps --> 0)
             {
-                var member = members.Dequeue();
+                var member = expr.Dequeue();
 
                 if (member.Type == MemberType.Operand)
                 {
@@ -39,12 +43,21 @@
                 {
                     var args = new IValueHolder[member.ParamsCount];
 
-                    for (int i = args.Length - 1; i > 0; i--)
+                    for (int i = args.Length - 1; i >= 0; i--)
                     {
                         args[i] = machine.Pop();
                     }
 
-                    machine.Push(member.SetInnerArgs(args).Calculate());
+                    try
+                    {
+                        machine.Push(member.SetInnerArgs(args).Calculate());
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new InvalidOperationException($"An exception occured during calculate an expression " +
+                            $"\"{InitialExpressionString}\" in variable set \"{VariableSet}\".\n" +
+                            $"Original exception is {ex}");
+                    }
                 }
             }
 

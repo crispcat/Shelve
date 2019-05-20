@@ -17,8 +17,6 @@
         {
             processedData = parsedSet;
             lexedExpressions = new List<LexedExpression>();
-
-            Tokenize();
         }
 
         public VariableSet Translate()
@@ -27,6 +25,8 @@
             {
                 members = localVariables = new HashedVariables()
             };
+
+            Tokenize();
 
             foreach (var lexed in lexedExpressions)
             {
@@ -38,23 +38,29 @@
 
         private void Tokenize()
         {
-            foreach (var declaredGroup in processedData.Declares)
+            if (processedData.Declares != null)
             {
-                translatedSet.declares.Add(declaredGroup.Key, new List<string>());
-
-                foreach (var expression in declaredGroup.Value)
+                foreach (var declaredGroup in processedData.Declares)
                 {
-                    var lexed = TokenizeExpression(expression);
-                    var targetVariable = lexed.GetTargetVariableName();
+                    translatedSet.declares.Add(declaredGroup.Key, new List<string>());
 
-                    lexedExpressions.Add(lexed);
-                    translatedSet.declares[declaredGroup.Key].Add(targetVariable);
+                    foreach (var expression in declaredGroup.Value)
+                    {
+                        var lexed = TokenizeExpression(expression);
+                        var targetVariable = lexed.GetTargetVariableName();
+
+                        lexedExpressions.Add(lexed);
+                        translatedSet.declares[declaredGroup.Key].Add(targetVariable);
+                    }
                 }
             }
 
-            foreach (var expression in processedData.Expressions)
+            if (processedData.Expressions != null)
             {
-                lexedExpressions.Add(TokenizeExpression(expression));
+                foreach (var expression in processedData.Expressions)
+                {
+                    lexedExpressions.Add(TokenizeExpression(expression));
+                }
             }
         }
 

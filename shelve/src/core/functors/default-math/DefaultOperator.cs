@@ -67,7 +67,7 @@
                     break;
 
                 default :
-                    throw new ArgumentException($"Sign {sign} is not an operator.");
+                    throw new ArgumentException($"Sign {sign} is not an {(isUnar? "unar" : "")} operator.");
             }
 
             return functor;

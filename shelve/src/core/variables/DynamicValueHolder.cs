@@ -25,6 +25,17 @@
 
         public DynamicValueHolder(Number value)
         {
+            Name = string.Empty;
+
+            _value = value;
+
+            affectsOn = new HashSet<IAffectable>();
+        }
+
+        public DynamicValueHolder(string name, Number value)
+        {
+            Name = name;
+
             _value = value;
 
             affectsOn = new HashSet<IAffectable>();

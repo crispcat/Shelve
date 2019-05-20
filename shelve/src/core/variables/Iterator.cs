@@ -7,13 +7,18 @@
     {
         private bool mustCalculateNextValue;
 
-        public void MoveNextValue() => mustCalculateNextValue = true;
+        public void MoveNextValue()
+        {
+            mustCalculateNextValue = true;
+            Calculate();
+            mustCalculateNextValue = false;
+        }
 
         public Iterator(string name, Number value) : base(name, value) => mustCalculateNextValue = false;
 
         public override Number Calculate()
         {
-            if (mustCalculateNextValue)
+            if (!mustCalculateNextValue)
             {
                 return LastValue;
             }

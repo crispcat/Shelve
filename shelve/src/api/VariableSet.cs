@@ -72,4 +72,18 @@
             return this;
         }
     }
+
+    public static class GroupExtenssion
+    {
+        public static void MoveAllIterators(this IEnumerable<IValueHolder> group)
+        {
+            foreach (var element in group)
+            {
+                if (element is Iterator iterator)
+                {
+                    iterator.MoveNextValue();
+                }
+            }
+        }
+    }
 }
