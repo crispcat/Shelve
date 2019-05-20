@@ -56,11 +56,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="ExpressionCalculationsTests.cs" />
     <Compile Include="FunctorsTests.cs" />
     <Compile Include="HashedCircularConcurrentQueueTests.cs" />
     <Compile Include="IOTests.cs" />
     <Compile Include="LexerTests.cs" />
+    <Compile Include="SeqenceTester.cs" />
     <Compile Include="ShuntingYardTests.cs" />
+    <Compile Include="VariableSetTests.cs" />
     <Compile Include="VariablesTests.cs" />
   </ItemGroup>
   <ItemGroup>

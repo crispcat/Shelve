@@ -35,10 +35,7 @@
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
 
-            foreach (var lexema in tokens.LexicalQueue)
-            {
-                Assert.IsTrue(lexema == lexicalQueue.Dequeue());
-            }
+            Assert.IsTrue(SequenceTester.IsEqual(tokens.LexicalQueue, lexicalQueue));
         }
 
         [Test] public void CorrectExpressionWithFunctions()
@@ -81,10 +78,7 @@
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
 
-            foreach (var lexema in tokens.LexicalQueue)
-            {
-                Assert.IsTrue(lexema == lexicalQueue.Dequeue());
-            }
+            Assert.IsTrue(SequenceTester.IsEqual(tokens.LexicalQueue, lexicalQueue));
         }
 
         [Test] public void FunctionCorrectAsVariableName()
@@ -119,10 +113,7 @@
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
 
-            foreach (var lexema in tokens.LexicalQueue)
-            {
-                Assert.IsTrue(lexema == lexicalQueue.Dequeue());
-            }
+            Assert.IsTrue(SequenceTester.IsEqual(tokens.LexicalQueue, lexicalQueue));
         }
 
         [Test] public void ComplexCorrectExpression()
@@ -170,10 +161,7 @@
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
 
-            foreach (var lexema in tokens.LexicalQueue)
-            {
-                Assert.IsTrue(lexema == lexicalQueue.Dequeue());
-            }
+            Assert.IsTrue(SequenceTester.IsEqual(tokens.LexicalQueue, lexicalQueue));
         }
 
         [Test] public void UncorrectExpression1()
@@ -193,6 +181,34 @@
         [Test] public void UncorrectExpression2()
         {
             var expression1 = "exp += sin30.1) + 0.8 * (-1 - 1 / (x + 1))";
+
+            try
+            {
+                var lexer = new Lexer();
+                var tokens = lexer.Tokenize(expression1);
+
+                Assert.Fail();
+            }
+            catch (System.ArgumentException) { }
+        }
+
+        [Test] public void UncorrectExpression3()
+        {
+            var expression1 = "exp += sin(30.1) ^ * 0.8 * (-1 - 1 / (x + 1))";
+
+            try
+            {
+                var lexer = new Lexer();
+                var tokens = lexer.Tokenize(expression1);
+
+                Assert.Fail();
+            }
+            catch (System.ArgumentException) { }
+        }
+
+        [Test] public void UncorrectExpression4()
+        {
+            var expression1 = "exp += sin(30.1) ^ .8 * (-1 - 1 / (x + 1))";
 
             try
             {
@@ -253,10 +269,7 @@
             lexicalQueue.Enqueue(new Lexema(")", Token.RightBracket));
             lexicalQueue.Enqueue(new Lexema("]", Token.SqRightBracket));
 
-            foreach (var lexema in tokens.LexicalQueue)
-            {
-                Assert.IsTrue(lexema == lexicalQueue.Dequeue());
-            }
+            Assert.IsTrue(SequenceTester.IsEqual(tokens.LexicalQueue, lexicalQueue));
         }
     }
 }

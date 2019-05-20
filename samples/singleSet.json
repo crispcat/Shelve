@@ -15,7 +15,7 @@
     },
     "Expressions":
     [
-        "V += V + A * T",
+        "V += A * T",
         "distance += position + V * T"
     ]
 }

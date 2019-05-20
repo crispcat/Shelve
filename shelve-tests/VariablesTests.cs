@@ -27,10 +27,5 @@
             Assert.IsFalse(ReferenceEquals(var1.GetType().GetProperty("Value"), var2.GetType().GetProperty("Value")));
             Assert.IsFalse(ReferenceEquals(var1.GetType().GetMethod("Calculate"), var2.GetType().GetMethod("Calculate")));
         }
-
-        [Test] public void Affections()
-        {
-
-        }
     }
 }
