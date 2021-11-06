@@ -1,22 +1,21 @@
 # Shelve
-Research implementation of reactive calculations with declatative defined functional models.
+Research implementation of reactive calculations with declarative defined functional models.
 
-This is my graduate work focused on learning how to implement hypothetical translator of mathematic expressions with some useful capabilities to work with functional mathematical models.
+This is my graduate work focused on learning how to implement a hypothetical translator of mathematical expressions with some useful capabilities to work with functional models.
 
 # Capabilities
 
-- One or more expressions can be assigned to a variable. 
-- Variables can be combined into models. 
-- Models can be merged into each orher to make variables depend on corresponded expressions in both.
+- Assign one or more expressions to a variable.
+- Combine variables into models.
+- Merge models into each other to make variables depend on corresponded expressions in both.
 - All expressions are reactive.
 - All expressions are lazy, cached and support change propagation.
-- All values are 64bit floating point numbers.
-- All values are stateless.
-- All, but iterators are not.
+- All values are 8-byte floating point numbers.
+- All values are stateless. All, but iterators are not.
 
 # Example
 
-Define models like that:
+Define models like:
 
 ```json
 {
@@ -32,7 +31,7 @@ Define models like that:
 {
   "Name" : "Sword",
   "Uses" : ["Knight"],
-  "Expressions" : 
+  "Expressions" :
   {
     "Power += 5",
     "Damage += 1 + 1.25 * Power"
@@ -59,17 +58,17 @@ knight.Merge(sword).Merge(shield);
 var criticalDamage = knight["CriticalDamage"]; // 36.25
 ```
 
-# Iterators 
+# Iterators
 
-Iterators are statefull values.
+Iterators are stateful values.
 ```json
 "it = [0, it + 1]"
 ```
-Where: 
+Where:
 - 0 - start value
-- it + 1 - expression for calculating next value.
+- it + 1 - expression to calculate the next value.
 
-Iterator store last calculated value and recalculates on MoveNextValue() call.
+Iterator stores the last calculated value and recalculates it on MoveNextValue() call.
 
 # More interesting example
 
@@ -120,4 +119,11 @@ Debug.Log(fibonacci["t2"]); // 3
 Debug.Log(fibonacci["t"]);  // 5
 
 // ...
+```
+
+# Functions
+Supporting all System.Math functions with only double type in signature. Just make a call in lowercase.
+```json
+"sin = sin(x)"
+"angle = atan2(x, y)"
 ```
