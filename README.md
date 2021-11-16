@@ -11,7 +11,7 @@ This is my graduate work focused on learning how to implement a hypothetical tra
 - All expressions are reactive.
 - All expressions are lazy, cached and support change propagation.
 - All values are 8-byte floating point numbers.
-- All values are stateless. All, but iterators are not.
+- All values are stateless. Except iterators.
 
 # Example
 
@@ -68,7 +68,7 @@ Where:
 - 0 - start value
 - it + 1 - expression to calculate the next value.
 
-Iterator stores the last calculated value and recalculates it on MoveNextValue() call.
+Iterator store last calculated value and recalculate it on MoveNextValue() call.
 
 # More interesting example
 
@@ -122,7 +122,7 @@ Debug.Log(fibonacci["t"]);  // 5
 ```
 
 # Functions
-Supporting all System.Math functions with only double type in signature. Just make a call in lowercase.
+Supports all System.Math functions for double floating point numbers. Just make a call in lowercase.
 ```json
 "sin = sin(x)"
 "angle = atan2(x, y)"
